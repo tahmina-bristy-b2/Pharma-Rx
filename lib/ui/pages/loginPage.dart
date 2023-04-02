@@ -394,13 +394,13 @@ class _LoginScreenState extends State<LoginScreen> {
         String submit_atten_url = status['submit_atten_url'] ?? "";
         String doctor_url = status['doctor_url'] ?? "";
         String submit_rx_url = status['submit_rx_url'] ?? "";
-        String report_rx_url = status['report_rx_url'];
+        String report_rx_url = status['report_rx_url'] ?? " ";
         String submit_photo_url = status['submit_photo_url'] ?? "";
-        String medicine_rx_url = status['medicine_rx_url'];
-        String change_pass_url = status['change_pass_url'];
-        String timer_track_url = status['timer_track_url'];
-        String plugin_url = status['plugin_url'];
-        String sync_notice_url = status['sync_notice_url'];
+        String medicine_rx_url = status['medicine_rx_url'] ?? "";
+        String change_pass_url = status['change_pass_url'] ?? "";
+        String timer_track_url = status['timer_track_url'] ?? "";
+        String plugin_url = status['plugin_url'] ?? "";
+        String sync_notice_url = status['sync_notice_url'] ?? "";
         // String photo_url = status['photo_url'];
 
         final prefs = await SharedPreferences.getInstance();

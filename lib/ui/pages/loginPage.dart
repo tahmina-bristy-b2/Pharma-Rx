@@ -284,9 +284,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     bool result =
                                         await InternetConnectionChecker()
                                             .hasConnection;
-
                                     if (result == true) {
-                                      dmPath(
+                                      login_url = await dmPath(
                                           deviceId,
                                           deviceBrand,
                                           deviceModel,
@@ -295,6 +294,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                           _userIdController.text,
                                           _passwordController.text,
                                           context);
+                                      if (login_url == "") {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      } else {
+                                        login(
+                                            deviceId,
+                                            deviceBrand,
+                                            deviceModel,
+                                            cid,
+                                            _userIdController.text,
+                                            _passwordController.text,
+                                            login_url,
+                                            context);
+                                      }
+
                                       // SharedPreferncesMethod()
                                       //     .sharedPreferenceSetDataForLogin(
                                       //         _companyIdController.text
@@ -302,7 +317,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                       //         _userIdController.text,
                                       //
                                       //     _passwordController.text);
-                                    } else {
+                                    }
+
+//==============================================================================================
+                                    // if (result == true) {
+                                    //   dmPath(
+                                    //       deviceId,
+                                    //       deviceBrand,
+                                    //       deviceModel,
+                                    //       _companyIdController.text
+                                    //           .toUpperCase(),
+                                    //       _userIdController.text,
+                                    //       _passwordController.text,
+                                    //       context);
+
+                                    //   // SharedPreferncesMethod()
+                                    //   //     .sharedPreferenceSetDataForLogin(
+                                    //   //         _companyIdController.text
+                                    //   //             .toUpperCase(),
+                                    //   //         _userIdController.text,
+                                    //   //
+                                    //   //     _passwordController.text);
+                                    // }
+
+                                    else {
                                       setState(() {
                                         isLoading = false;
                                       });
@@ -438,6 +476,8 @@ class _LoginScreenState extends State<LoginScreen> {
       String password,
       String loginUrl,
       BuildContext context) async {
+    List dcrDataList = [];
+    String status = '';
     try {
       print(
           '$login_url?cid=$cid&user_id=$userId&user_pass=$password&device_id=$deviceId&device_brand=$deviceBrand&device_model=$deviceModel&app_v=$version');
@@ -452,7 +492,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       var userInfo = json.decode(response.body);
       print(userInfo);
-      var status = userInfo['status'];
+      status = userInfo['status'];
 
       if (status == 'Success') {
         setState(() {
@@ -538,6 +578,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //     ),
         //   ),
         // );
+        return status;
       } else {
         setState(() {
           isLoading = false;

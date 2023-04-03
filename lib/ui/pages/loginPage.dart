@@ -372,7 +372,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final http.Response response = await http.get(
         Uri.parse(
-            'http://w03.yeapps.com/dmpath/dmpath_test/get_dmpath?cid=$cid'),
+            'http://w03.yeapps.com/dmpath/dmpath_rx_101/get_dmpath?cid=$cid'),
       );
 
       // final Map<String, dynamic> jsonresponse = json.decode(response.body);

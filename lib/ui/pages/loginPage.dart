@@ -381,7 +381,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final http.Response response = await http.get(
         Uri.parse(
-            'http://dmpath.yeapps.com/dmpath/dmpath_rx_101/get_dmpath?cid=$cid'),
+            'http://w03.yeapps.com/dmpath/dmpath_rx_101/get_dmpath?cid=$cid'),
       );
 
       // final Map<String, dynamic> jsonresponse = json.decode(response.body);
@@ -390,7 +390,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print("userinfo ashbe from loginpage ${userInfo}");
       var status = userInfo['res_data'];
 
-      if (status['ret_res'] != 'Welcome to mReporting.') {
+      if (status['ret_res'] == 'Welcome to mReporting.') {
         _submitToastforOrder1();
 
         setState(() {
@@ -398,7 +398,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         return loginUrl;
       } else {
-        dmPathDataModelData = dmPathDataModelFromJson(status);
+        dmPathDataModelData = dmPathDataModelFromJson(jsonEncode(status));
         dmpathBox.put('dmpathData', dmPathDataModelData);
         loginUrl = status['login_url'] ?? '';
 
@@ -453,6 +453,7 @@ class _LoginScreenState extends State<LoginScreen> {
       String password,
       String loginUrl,
       BuildContext context) async {
+    print("11111111111111111111111111111111111111111111111");
     try {
       print(
           '$login_url?cid=$cid&user_id=$userId&user_pass=$password&device_id=$deviceId&device_brand=$deviceBrand&device_model=$deviceModel&app_v=$version');

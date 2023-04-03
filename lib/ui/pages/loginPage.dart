@@ -1,15 +1,14 @@
 // ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
 
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:pharma_rx/services/apiCall.dart';
+import 'package:pharma_rx/models/boxes.dart';
+import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/services/sharedPrefernce.dart';
 import 'package:pharma_rx/ui/pages/homePage.dart';
 import 'package:pharma_rx/ui/pages/sync_data_tab_page.dart';
@@ -405,12 +404,22 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // Dm Path and Login function................
-  Future dmPath(String? deviceId, String? deviceBrand, String? deviceModel,
-      String cid, String userId, String password, BuildContext context) async {
+  Future<String> dmPath(
+      String? deviceId,
+      String? deviceBrand,
+      String? deviceModel,
+      String cid,
+      String userId,
+      String password,
+      BuildContext context) async {
+    final dmpathBox = Boxes.getDmPathDataModel();
+    DmPathDataModel dmPathDataModelData;
+    String loginUrl = '';
+
     try {
       final http.Response response = await http.get(
         Uri.parse(
-            'http://w03.yeapps.com/dmpath/dmpath_test/get_dmpath?cid=$cid'),
+            'http://w03.yeapps.com/dmpath/dmpath_rx_101/get_dmpath?cid=$cid'),
       );
 
       // final Map<String, dynamic> jsonresponse = json.decode(response.body);
@@ -425,20 +434,25 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           isLoading = false;
         });
+        return loginUrl;
       } else {
+        dmPathDataModelData = dmPathDataModelFromJson(jsonEncode(status));
+        dmpathBox.put('dmpathData', dmPathDataModelData);
+        loginUrl = status['login_url'] ?? '';
+
         login_url = status['login_url'];
 
-        String area_url = status['area_url'] ?? "";
+        String area_url = status['area_url'];
         String submit_atten_url = status['submit_atten_url'] ?? "";
-        String doctor_url = status['doctor_url'] ?? "";
-        String submit_rx_url = status['submit_rx_url'] ?? "";
-        String report_rx_url = status['report_rx_url'] ?? " ";
-        String submit_photo_url = status['submit_photo_url'] ?? "";
-        String medicine_rx_url = status['medicine_rx_url'] ?? "";
-        String change_pass_url = status['change_pass_url'] ?? "";
-        String timer_track_url = status['timer_track_url'] ?? "";
-        String plugin_url = status['plugin_url'] ?? "";
-        String sync_notice_url = status['sync_notice_url'] ?? "";
+        String doctor_url = status['doctor_url'];
+        String submit_rx_url = status['submit_rx_url'];
+        String report_rx_url = status['report_rx_url'];
+        String submit_photo_url = status['submit_photo_url'];
+        String medicine_rx_url = status['medicine_rx_url'];
+        String change_pass_url = status['change_pass_url'];
+        String timer_track_url = status['timer_track_url'];
+        String plugin_url = status['plugin_url'];
+        String sync_notice_url = status['sync_notice_url'];
         // String photo_url = status['photo_url'];
 
         final prefs = await SharedPreferences.getInstance();
@@ -459,6 +473,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         login(deviceId, deviceBrand, deviceModel, cid, userId, password,
             login_url, context);
+        return loginUrl;
       }
 
       // return isLoading;
@@ -500,21 +515,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // print(isLoading);x
         });
-
         String userName = userInfo['user_name'];
         String user_id = userInfo['user_id'];
-
         String mobile_no = userInfo['mobile_no'];
         bool rxDocMustFlag = userInfo["rx_doc_must"];
         bool rxTypeMustFlag = userInfo["rx_type_must"];
         bool notice_flag = userInfo["notice_flag"];
-
         bool rxGalAllowFlag = userInfo["rx_gallery_allow"];
         timer_flag = userInfo["timer_flag"];
-
         print("Notice Flage          :$notice_flag");
         print(timer_flag);
-
         // List rx_type_list = userInfo["rx_type_list"];
         List rx_type_list = userInfo["rx_type_list"];
         rxTypeList.clear();

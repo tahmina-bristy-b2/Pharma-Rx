@@ -6,8 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pharma_rx/services/sharedPrefernce.dart';
-import 'package:pharma_rx/ui/pages/Rx/rx_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataSyncAndSaveToHive {

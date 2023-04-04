@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
         medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
         cid = prefs.getString("CID")!;
         userId = prefs.getString("USER_ID")!;
-        userPassword = prefs.getString("PASSWORD")!;
+        userPassword = prefs.getString("PASSWORD") ?? '';
         deviceId = prefs.getString("deviceId") ?? " ";
         areaPage = prefs.getString("areaPage");
         userName = prefs.getString("userName");
@@ -99,6 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
         plugin_url = prefs.getString("plugin_url") ?? '';
         notice_flag = prefs.getBool("notice_flag") ?? false;
         timer_flag = prefs.getBool("timer_flag");
+
+        var data = prefs.getString("area_url");
+        print("object21111111111111111111===============${data}");
 
         setState(() {
           notice_flag = prefs.getBool("notice_flag") ?? false;
@@ -118,7 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
       print("flag ashtse ${timer_flag}");
 
-      
       getPermission();
 
       setState(() {});

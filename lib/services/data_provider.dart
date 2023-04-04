@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:pharma_rx/services/apis.dart';
 
 class Dataproviders {
-  dmpathResponse(String cid) async {
+  Future<http.Response> dmpathResponse(String cid) async {
     final http.Response response;
     response = await http.get(
       Uri.parse(Apis().dmPath(cid)),
@@ -12,7 +12,7 @@ class Dataproviders {
     return response;
   }
 
-  loginResponse(
+  Future<http.Response> loginResponse(
       String? deviceId,
       String? deviceBrand,
       String? deviceModel,
@@ -22,6 +22,7 @@ class Dataproviders {
       String loginUrl,
       String version) async {
     final http.Response response;
+
     response = await http.get(
       Uri.parse(Apis().login(deviceId, deviceBrand, deviceModel, cid, userId,
           password, loginUrl, version)),

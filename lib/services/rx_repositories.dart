@@ -1,23 +1,36 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:http/http.dart';
 import 'package:pharma_rx/services/all_services.dart';
 import 'package:pharma_rx/services/apis.dart';
 import 'package:pharma_rx/services/data_provider.dart';
 import 'package:pharma_rx/services/sharedPrefernce.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Repository {
-  Future<String> getDmPathData(String cid) async {
+  Future<String> getDmPathData(
+      String? deviceId,
+      String? deviceBrand,
+      String? deviceModel,
+      String cid,
+      String userId,
+      String password,
+      BuildContext context) async {
     String loginUrl = '';
     try {
-      var userInfo = json.decode(Dataproviders().dmpathResponse(cid));
+      http.Response response = await Dataproviders().dmpathResponse(cid);
+      var userInfo = json.decode(response.body);
       //print("userinfo ashbe from loginpage ${userInfo}");
       var status = userInfo['res_data'];
+      print("userInfo======================$userInfo");
+      print("status======================$status");
 
-      if (status['ret_res'] == 'Welcome to mReporting.') {
+      if (status['res_data'] == 'Welcome to mReporting.') {
         RxAllServices().toastMessage('Wrong CID', Colors.red, Colors.white, 16);
       } else {
+        print("object==");
         loginUrl = status['login_url'];
         String areaUrl = status['area_url'] ?? "";
         String submitAttenUrl = status['submit_atten_url'] ?? "";
@@ -30,6 +43,9 @@ class Repository {
         String timerTrackUrl = status['timer_track_url'] ?? "";
         String pluginUrl = status['plugin_url'] ?? "";
         String syncNoticeUrl = status['sync_notice_url'] ?? "";
+
+        print(
+            "object=======================doctorUrl=$doctorUrl,loginUrl=$loginUrl,submitAttenUrl =$submitAttenUrl,doctorUrl =$doctorUrl,submitRxUrl=$submitRxUrl,");
         // String photo_url = status['photo_url'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('submit_atten_url', submitAttenUrl);
@@ -56,25 +72,33 @@ class Repository {
     }
   }
 
-  Future getloginInfo(
-    String? deviceId,
-    String? deviceBrand,
-    String? deviceModel,
-    String cid,
-    String userId,
-    String password,
-    String loginUrl,
-    String version,
-  ) async {
+  Future<Map<String, dynamic>> getloginInfo(
+      String? deviceId,
+      String? deviceBrand,
+      String? deviceModel,
+      String cid,
+      String userId,
+      String password,
+      String loginUrl,
+      String version,
+      List<String> rxTypeList) async {
+    Map<String, dynamic> userInfo = {};
     try {
       print(Apis().login(deviceId, deviceBrand, deviceModel, cid, userId,
           password, loginUrl, version));
-      var userInfo = json.decode(Dataproviders()
-          .loginResponse(deviceId, deviceBrand, deviceModel, cid, userId,
-              password, loginUrl, version)
-          .body);
+      final http.Response response = await Dataproviders().loginResponse(
+          deviceId,
+          deviceBrand,
+          deviceModel,
+          cid,
+          userId,
+          password,
+          loginUrl,
+          version);
+      userInfo = json.decode(response.body);
+
       print(userInfo);
-      var status = userInfo['status'];
+      String status = userInfo['status'];
 
       if (status == 'Success') {
         bool timerFlag = false;
@@ -92,9 +116,9 @@ class Repository {
         print("Notice Flage          :$noticeFlag");
         print(timerFlag);
 
-        List<String> rxTypeList = userInfo["rx_type_list"];
+        List rxTypeListData = userInfo["rx_type_list"];
         rxTypeList.clear();
-        rxTypeList.forEach((element) {
+        rxTypeListData.forEach((element) {
           rxTypeList.add(element);
         });
         print(rxTypeList);
@@ -114,17 +138,17 @@ class Repository {
         await prefs.setBool('timer_flag', timerFlag);
         await prefs.setBool('notice_flag', noticeFlag);
         await prefs.setStringList('rxTypeList', rxTypeList);
+        await prefs.setString('PASSWORD', password);
 
-        SharedPreferncesMethod()
-            .sharedPreferenceSetDataForLogin(cid, userId, password);
+        SharedPreferncesMethod().sharedPreferenceSetDataForLogin(cid, userId);
 
-        Hive.openBox('MedicineList').then(
-          (value) {
-            // var mymap = value.toMap().values.toList();
-            List dcrDataList = value.toMap().values.toList();
-            print(dcrDataList.length);
-          },
-        );
+        // Hive.openBox('MedicineList').then(
+        //   (value) {
+        //     // var mymap = value.toMap().values.toList();
+        //     List dcrDataList = value.toMap().values.toList();
+        //     print(dcrDataList.length);
+        //   },
+        // );
         // Navigator.pushReplacement(
         //   context,
         //   MaterialPageRoute(
@@ -133,12 +157,17 @@ class Repository {
         //       user_id: user_id,
         //     ),
         //   ),
-        // );
+        // );\
+
+        return userInfo;
       } else {
+        RxAllServices().toastMessage(
+            'Wrong user Id and Password', Colors.red, Colors.white, 16);
         // setState(() {
         //   isLoading = false;
         // });
         //_submitToastforOrder2();
+        return userInfo;
       }
     } on Exception catch (_) {
       throw Exception("Error on server");

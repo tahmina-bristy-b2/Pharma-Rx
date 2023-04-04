@@ -175,6 +175,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
           actions: [
             ElevatedButton(
                 onPressed: () async {
+                  print("object=====$territory");
                   await showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -190,7 +191,7 @@ class _DoctorScreenState extends State<DoctorScreen> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: const Color.fromARGB(255, 138, 201, 149),
+                  backgroundColor: const Color.fromARGB(255, 138, 201, 149),
                 ),
                 child: Column(
                   children: const [

@@ -15,6 +15,7 @@ import 'package:location/location.dart';
 import 'package:pharma_rx/main.dart';
 import 'package:pharma_rx/models/boxes.dart';
 import 'package:pharma_rx/models/dmpath_data_model.dart';
+import 'package:pharma_rx/models/login_data_model.dart';
 import 'package:pharma_rx/services/apiCall.dart';
 import 'package:pharma_rx/ui/pages/Rx/notice_screen.dart';
 import 'package:pharma_rx/ui/pages/Rx/rx_draft_screen.dart';
@@ -55,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Box? box;
   DmPathDataModel? dmPathData;
+  LoginDataModel? loginDataInfo;
 
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
@@ -64,20 +66,20 @@ class _MyHomePageState extends State<MyHomePage> {
   //String report_url = '';
   //String medicine_rx_url = '';
   String cid = '';
-  String userId = '';
+  //String userId = '';
   String userPassword = '';
   String deviceId = "";
   //String plugin_url = "";
   String? areaPage;
-  String? userName;
+  //String? userName;
   String? startTime;
-  String? user_id;
+  //String? user_id;
   String mobile_no = '';
   String? endTime;
   String version = '101';
   bool isLoading = true;
-  bool notice_flag = false;
-  var timer_flag;
+  //bool notice_flag = false;
+  //var timer_flag;
 
   Location location = Location();
   // location.enableBackgroundMode();
@@ -86,6 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     dmPathData = Boxes.getDmPathDataModel().get('dmPathData');
+    loginDataInfo = Boxes.getLoginDataModel().get('userInfo');
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((prefs) {
         startTime = prefs.getString("startTime") ?? '';
@@ -93,22 +97,22 @@ class _MyHomePageState extends State<MyHomePage> {
         //report_url = prefs.getString("report_rx_url")!;
         //medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
         cid = prefs.getString("CID")!;
-        userId = prefs.getString("USER_ID")!;
+        //userId = prefs.getString("USER_ID")!;
         userPassword = prefs.getString("PASSWORD") ?? '';
         deviceId = prefs.getString("deviceId") ?? " ";
         areaPage = prefs.getString("areaPage");
-        userName = prefs.getString("userName");
-        user_id = prefs.getString("user_id");
+        //userName = prefs.getString("userName");
+        //user_id = prefs.getString("user_id");
         mobile_no = prefs.getString("mobile_no") ?? '';
         //plugin_url = prefs.getString("plugin_url") ?? '';
-        notice_flag = prefs.getBool("notice_flag") ?? false;
-        timer_flag = prefs.getBool("timer_flag");
+        //notice_flag = prefs.getBool("notice_flag") ?? false;
+        //timer_flag = prefs.getBool("timer_flag");
 
-        var data = prefs.getString("area_url");
+        // var data = prefs.getString("area_url");
         //print("object21111111111111111111===============${data}");
 
         setState(() {
-          notice_flag = prefs.getBool("notice_flag") ?? false;
+          //notice_flag = prefs.getBool("notice_flag") ?? false;
           int space = startTime!.indexOf(" ");
           String removeSpace =
               startTime!.substring(space + 1, startTime!.length);
@@ -123,12 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
 //------------------------------------------------------
 
-      print("flag ashtse ${timer_flag}");
+      //print("flag ashtse ${timer_flag}");
 
       getPermission();
 
       setState(() {});
-      print("Noti Flag $notice_flag");
+      //print("Noti Flag $notice_flag");
     });
   }
 
@@ -154,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (_serviceEnabled &&
         _permissionGranted == PermissionStatus.granted &&
-        timer_flag == true) {
+        loginDataInfo!.timerFlag == true) {
       //await initializeService();
 
       BGservice.serviceOn();
@@ -257,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   await prefs.setString('CID', cid);
 
-                  print("Update Timer flage : $timer_flag");
+                  print("Update Timer flage : $loginDataInfo!.timerFlag");
 
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()));
@@ -512,7 +516,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       MaterialPageRoute(
                                         builder: (_) => RxReportScreen(
                                           cid: cid,
-                                          userId: userId,
+                                          userId: loginDataInfo!.userId,
                                           userPassword: userPassword,
                                           report_url: dmPathData!.reportRxUrl,
                                         ),
@@ -547,7 +551,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Row(
                             children: [
-                              notice_flag
+                              loginDataInfo!.noticeFlag
                                   ? Expanded(
                                       child: CustomHomeButton(
                                         icon: Icons.note_alt,
@@ -627,12 +631,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           Expanded(
                             child: Link(
                                 uri: Uri.parse(
-                                    '${dmPathData!.pluginUrl}?cid=$cid&rep_id=$userId&rep_pass=$userPassword'),
+                                    '${dmPathData!.pluginUrl}?cid=$cid&rep_id=${loginDataInfo!.userId}&rep_pass=$userPassword'),
                                 target: LinkTarget.blank,
                                 builder:
                                     (BuildContext ctx, FollowLink? openLink) {
                                   print(
-                                      '${dmPathData!.pluginUrl}?cid=$cid&rep_id=$userId&rep_pass=$userPassword');
+                                      'plugin====${dmPathData!.pluginUrl}?cid=$cid&rep_id=${loginDataInfo!.userId}&rep_pass=$userPassword');
                                   return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         elevation: 5,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/models/hive_data_model.dart';
+import 'package:pharma_rx/models/login_data_model.dart';
 import 'package:pharma_rx/ui/pages/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,10 +18,12 @@ void main() async {
   Hive.registerAdapter(RxDcrDataModelAdapter());
   Hive.registerAdapter(MedicineListModelAdapter());
   Hive.registerAdapter(DmPathDataModelAdapter());
+  Hive.registerAdapter(LoginDataModelAdapter());
   await Hive.openBox('doctorList');
   await Hive.openBox<RxDcrDataModel>('RxdDoctor');
   await Hive.openBox<MedicineListModel>('draftMdicinList');
   await Hive.openBox<DmPathDataModel>('dmpathDataList');
+  await Hive.openBox<LoginDataModel>('loginDataInfo');
   SharedPreferences prefs = await SharedPreferences.getInstance();
   timer_flag = prefs.getBool("timer_flag");
 //   Location location = Location();

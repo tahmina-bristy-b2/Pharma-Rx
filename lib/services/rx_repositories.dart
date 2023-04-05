@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
 import 'package:pharma_rx/models/boxes.dart';
 import 'package:pharma_rx/models/dmpath_data_model.dart';
+import 'package:pharma_rx/models/login_data_model.dart';
 import 'package:pharma_rx/services/all_services.dart';
 import 'package:pharma_rx/services/apis.dart';
 import 'package:pharma_rx/services/data_provider.dart';
@@ -26,15 +27,10 @@ class Repository {
     try {
       http.Response response = await Dataproviders().dmpathResponse(cid);
       var userInfo = json.decode(response.body);
-      //print("userinfo ashbe from loginpage ${userInfo}");
       var status = userInfo['res_data'];
-      // print("userInfo======================$userInfo");
-      // print("status======================$status");
-
       if (status['res_data'] == 'Welcome to mReporting.') {
         RxAllServices().toastMessage('Wrong CID', Colors.red, Colors.white, 16);
       } else {
-        //print("object==");t
         dmPathDataModel = dmPathDataModelFromJson(jsonEncode(status));
         dmpathBox.put("dmPathData", dmPathDataModel);
         loginUrl = status['login_url'];
@@ -49,10 +45,6 @@ class Repository {
         String timerTrackUrl = status['timer_track_url'] ?? "";
         String pluginUrl = status['plugin_url'] ?? "";
         String syncNoticeUrl = status['sync_notice_url'] ?? "";
-
-        print(
-            "object=======================doctorUrl=$doctorUrl,loginUrl=$loginUrl,submitAttenUrl =$submitAttenUrl,doctorUrl =$doctorUrl,submitRxUrl=$submitRxUrl,");
-        // String photo_url = status['photo_url'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('submit_atten_url', submitAttenUrl);
         await prefs.setString('medicine_rx_url', medicineRxUrl);
@@ -65,11 +57,6 @@ class Repository {
         await prefs.setString('timer_track_url', timerTrackUrl);
         await prefs.setString('plugin_url', pluginUrl);
         await prefs.setString('sync_notice_url', syncNoticeUrl);
-
-        // await prefs.setString('photo_url', photo_url);
-
-        // login(deviceId, deviceBrand, deviceModel, cid, userId, password,
-        //     login_url, context);
         return loginUrl;
       }
       return loginUrl;
@@ -78,6 +65,7 @@ class Repository {
     }
   }
 
+//===============================================================Login APi=================================================================================
   Future<Map<String, dynamic>> getloginInfo(
       String? deviceId,
       String? deviceBrand,
@@ -88,7 +76,10 @@ class Repository {
       String loginUrl,
       String version,
       List<String> rxTypeList) async {
+    final loginDataBox = Boxes.getLoginDataModel();
     Map<String, dynamic> userInfo = {};
+    LoginDataModel loginDataModel;
+
     try {
       print(Apis().login(deviceId, deviceBrand, deviceModel, cid, userId,
           password, loginUrl, version));
@@ -101,12 +92,15 @@ class Repository {
           password,
           loginUrl,
           version);
+      var body = json.decode(response.body);
       userInfo = json.decode(response.body);
 
       print(userInfo);
       String status = userInfo['status'];
 
       if (status == 'Success') {
+        loginDataModel = loginDataModelFromJson(jsonEncode(body));
+        loginDataBox.put('userInfo', loginDataModel);
         bool timerFlag = false;
         String userName = userInfo['user_name'];
         String userId = userInfo['user_id'];

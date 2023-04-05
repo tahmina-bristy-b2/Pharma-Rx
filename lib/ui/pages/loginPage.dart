@@ -273,147 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: screenWidth / 4,
-                              height: screenWidth / 10,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    bool result =
-                                        await InternetConnectionChecker()
-                                            .hasConnection;
-                                    if (result == true) {
-                                      login_url = await Repository()
-                                          .getDmPathData(
-                                              deviceId,
-                                              deviceBrand,
-                                              deviceModel,
-                                              _companyIdController.text
-                                                  .toUpperCase(),
-                                              _userIdController.text,
-                                              _passwordController.text,
-                                              context);
-
-                                      print("object=$login_url");
-                                      if (login_url == "") {
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                      } else {
-                                        var dataInfo = await Repository()
-                                            .getloginInfo(
-                                                deviceId,
-                                                deviceBrand,
-                                                deviceModel,
-                                                _companyIdController.text
-                                                    .toUpperCase(),
-                                                _userIdController.text,
-                                                _passwordController.text,
-                                                login_url,
-                                                version,
-                                                rxTypeList);
-                                        String userName = dataInfo["user_name"];
-                                        String userId = dataInfo["user_id"];
-
-                                        if (dataInfo['status'] == 'Success') {
-                                          Hive.openBox('MedicineList').then(
-                                            (value) {
-                                              List dcrDataList =
-                                                  value.toMap().values.toList();
-                                              print(dcrDataList.length);
-                                              if (dcrDataList.isNotEmpty) {
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyHomePage(
-                                                            userName: userName,
-                                                            user_id: userId),
-                                                  ),
-                                                );
-                                              } else {
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        const SyncDataTabPage(),
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                          );
-                                        }
-
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                        // login(
-                                        //     deviceId,
-                                        //     deviceBrand,
-                                        //     deviceModel,
-                                        //     cid,
-                                        //     _userIdController.text,
-                                        //     _passwordController.text,
-                                        //     login_url,
-                                        //     context);
-                                      }
-
-                                      // SharedPreferncesMethod()
-                                      //     .sharedPreferenceSetDataForLogin(
-                                      //         _companyIdController.text
-                                      //             .toUpperCase(),
-                                      //         _userIdController.text,
-                                      //
-                                      //     _passwordController.text);
-                                    }
-
-//==============================================================================================
-                                    // if (result == true) {
-                                    //   dmPath(
-                                    //       deviceId,
-                                    //       deviceBrand,
-                                    //       deviceModel,
-                                    //       _companyIdController.text
-                                    //           .toUpperCase(),
-                                    //       _userIdController.text,
-                                    //       _passwordController.text,
-                                    //       context);
-
-                                    //   // SharedPreferncesMethod()
-                                    //   //     .sharedPreferenceSetDataForLogin(
-                                    //   //         _companyIdController.text
-                                    //   //             .toUpperCase(),
-                                    //   //         _userIdController.text,
-                                    //   //
-                                    //   //     _passwordController.text);
-                                    // }
-
-                                    else {
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      RxAllServices().toastMessage(
-                                          "No Internet Connection\nPlease check your internet connection.",
-                                          Colors.red,
-                                          Colors.white,
-                                          16);
-
-                                      // print(InternetConnectionChecker()
-                                      //     .lastTryResults);
-                                    }
-                                  } else {}
-                                },
-                                child: const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            )
+                            loginButton(context)
                           ],
                         ),
                       ),
@@ -438,6 +298,138 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           );
+  }
+
+  SizedBox loginButton(BuildContext context) {
+    return SizedBox(
+      width: screenWidth / 4,
+      height: screenWidth / 10,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            setState(() {
+              isLoading = true;
+            });
+            bool result = await InternetConnectionChecker().hasConnection;
+            if (result == true) {
+              login_url = await Repository().getDmPathData(
+                  deviceId,
+                  deviceBrand,
+                  deviceModel,
+                  _companyIdController.text.toUpperCase(),
+                  _userIdController.text,
+                  _passwordController.text,
+                  context);
+
+              //print("object=$login_url");
+              if (login_url == "") {
+                setState(() {
+                  isLoading = false;
+                });
+              } else {
+                var dataInfo = await Repository().getloginInfo(
+                    deviceId,
+                    deviceBrand,
+                    deviceModel,
+                    _companyIdController.text.toUpperCase(),
+                    _userIdController.text,
+                    _passwordController.text,
+                    login_url,
+                    version,
+                    rxTypeList);
+                String userName = dataInfo["user_name"];
+                String userId = dataInfo["user_id"];
+
+                if (dataInfo['status'] == 'Success') {
+                  Hive.openBox('MedicineList').then(
+                    (value) {
+                      List dcrDataList = value.toMap().values.toList();
+                      //print(dcrDataList.length);
+                      if (dcrDataList.isNotEmpty) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MyHomePage(userName: userName, user_id: userId),
+                          ),
+                        );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SyncDataTabPage(),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                }
+
+                setState(() {
+                  isLoading = false;
+                });
+                // login(
+                //     deviceId,
+                //     deviceBrand,
+                //     deviceModel,
+                //     cid,
+                //     _userIdController.text,
+                //     _passwordController.text,
+                //     login_url,
+                //     context);
+              }
+
+              // SharedPreferncesMethod()
+              //     .sharedPreferenceSetDataForLogin(
+              //         _companyIdController.text
+              //             .toUpperCase(),
+              //         _userIdController.text,
+              //
+              //     _passwordController.text);
+            }
+
+//==============================================================================================
+            // if (result == true) {
+            //   dmPath(
+            //       deviceId,
+            //       deviceBrand,
+            //       deviceModel,
+            //       _companyIdController.text
+            //           .toUpperCase(),
+            //       _userIdController.text,
+            //       _passwordController.text,
+            //       context);
+
+            //   // SharedPreferncesMethod()
+            //   //     .sharedPreferenceSetDataForLogin(
+            //   //         _companyIdController.text
+            //   //             .toUpperCase(),
+            //   //         _userIdController.text,
+            //   //
+            //   //     _passwordController.text);
+            // }
+
+            else {
+              setState(() {
+                isLoading = false;
+              });
+              RxAllServices().toastMessage(
+                  "No Internet Connection\nPlease check your internet connection.",
+                  Colors.red,
+                  Colors.white,
+                  16);
+
+              // print(InternetConnectionChecker()
+              //     .lastTryResults);
+            }
+          } else {}
+        },
+        child: const Text(
+          'Login',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 
   buildShowDialog(BuildContext context) {

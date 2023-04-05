@@ -13,6 +13,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:location/location.dart';
 import 'package:pharma_rx/main.dart';
+import 'package:pharma_rx/models/boxes.dart';
+import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/services/apiCall.dart';
 import 'package:pharma_rx/ui/pages/Rx/notice_screen.dart';
 import 'package:pharma_rx/ui/pages/Rx/rx_draft_screen.dart';
@@ -52,19 +54,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Box? box;
+  DmPathDataModel? dmPathData;
 
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   List data = [];
   double screenHeight = 0.0;
   double screenWidth = 0.0;
-  String report_url = '';
-  String medicine_rx_url = '';
+  //String report_url = '';
+  //String medicine_rx_url = '';
   String cid = '';
   String userId = '';
   String userPassword = '';
   String deviceId = "";
-  String plugin_url = "";
+  //String plugin_url = "";
   String? areaPage;
   String? userName;
   String? startTime;
@@ -82,12 +85,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    dmPathData = Boxes.getDmPathDataModel().get('dmPathData');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((prefs) {
         startTime = prefs.getString("startTime") ?? '';
         endTime = prefs.getString("endTime") ?? '';
-        report_url = prefs.getString("report_rx_url")!;
-        medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
+        //report_url = prefs.getString("report_rx_url")!;
+        //medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
         cid = prefs.getString("CID")!;
         userId = prefs.getString("USER_ID")!;
         userPassword = prefs.getString("PASSWORD") ?? '';
@@ -96,12 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
         userName = prefs.getString("userName");
         user_id = prefs.getString("user_id");
         mobile_no = prefs.getString("mobile_no") ?? '';
-        plugin_url = prefs.getString("plugin_url") ?? '';
+        //plugin_url = prefs.getString("plugin_url") ?? '';
         notice_flag = prefs.getBool("notice_flag") ?? false;
         timer_flag = prefs.getBool("timer_flag");
 
         var data = prefs.getString("area_url");
-        print("object21111111111111111111===============${data}");
+        //print("object21111111111111111111===============${data}");
 
         setState(() {
           notice_flag = prefs.getBool("notice_flag") ?? false;
@@ -510,7 +514,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           cid: cid,
                                           userId: userId,
                                           userPassword: userPassword,
-                                          report_url: report_url,
+                                          report_url: dmPathData!.reportRxUrl,
                                         ),
                                       ),
                                     );
@@ -623,12 +627,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           Expanded(
                             child: Link(
                                 uri: Uri.parse(
-                                    '$plugin_url?cid=$cid&rep_id=$userId&rep_pass=$userPassword'),
+                                    '${dmPathData!.pluginUrl}?cid=$cid&rep_id=$userId&rep_pass=$userPassword'),
                                 target: LinkTarget.blank,
                                 builder:
                                     (BuildContext ctx, FollowLink? openLink) {
                                   print(
-                                      '$plugin_url?cid=$cid&rep_id=$userId&rep_pass=$userPassword');
+                                      '${dmPathData!.pluginUrl}?cid=$cid&rep_id=$userId&rep_pass=$userPassword');
                                   return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         elevation: 5,

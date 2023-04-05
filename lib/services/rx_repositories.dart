@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
+import 'package:pharma_rx/models/boxes.dart';
+import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/services/all_services.dart';
 import 'package:pharma_rx/services/apis.dart';
 import 'package:pharma_rx/services/data_provider.dart';
@@ -18,19 +20,23 @@ class Repository {
       String userId,
       String password,
       BuildContext context) async {
+    final dmpathBox = Boxes.getDmPathDataModel();
+    DmPathDataModel dmPathDataModel;
     String loginUrl = '';
     try {
       http.Response response = await Dataproviders().dmpathResponse(cid);
       var userInfo = json.decode(response.body);
       //print("userinfo ashbe from loginpage ${userInfo}");
       var status = userInfo['res_data'];
-      print("userInfo======================$userInfo");
-      print("status======================$status");
+      // print("userInfo======================$userInfo");
+      // print("status======================$status");
 
       if (status['res_data'] == 'Welcome to mReporting.') {
         RxAllServices().toastMessage('Wrong CID', Colors.red, Colors.white, 16);
       } else {
-        print("object==");
+        //print("object==");t
+        dmPathDataModel = dmPathDataModelFromJson(jsonEncode(status));
+        dmpathBox.put("dmPathData", dmPathDataModel);
         loginUrl = status['login_url'];
         String areaUrl = status['area_url'] ?? "";
         String submitAttenUrl = status['submit_atten_url'] ?? "";

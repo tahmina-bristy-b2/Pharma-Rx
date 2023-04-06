@@ -13,6 +13,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:location/location.dart';
 import 'package:pharma_rx/main.dart';
+import 'package:pharma_rx/models/boxes.dart';
+import 'package:pharma_rx/models/dmpath_data_model.dart';
+import 'package:pharma_rx/models/login_data_model.dart';
+import 'package:pharma_rx/models/others_data_model.dart';
 import 'package:pharma_rx/services/apiCall.dart';
 import 'package:pharma_rx/ui/pages/Rx/notice_screen.dart';
 import 'package:pharma_rx/ui/pages/Rx/rx_draft_screen.dart';
@@ -52,29 +56,33 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Box? box;
+  DmPathDataModel? dmPathData;
+  LoginDataModel? loginDataInfo;
+  OthersDataModel? othersData;
+  Box<OthersDataModel>? anotherOtherData;
 
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   List data = [];
   double screenHeight = 0.0;
   double screenWidth = 0.0;
-  String report_url = '';
-  String medicine_rx_url = '';
-  String cid = '';
-  String userId = '';
-  String userPassword = '';
+  //String report_url = '';
+  //String medicine_rx_url = '';
+  //String cid = '';
+  //String userId = '';
+  //String userPassword = '';
   String deviceId = "";
-  String plugin_url = "";
-  String? areaPage;
-  String? userName;
+  //String plugin_url = "";
+  //String? areaPage;
+  //String? userName;
   String? startTime;
-  String? user_id;
+  //String? user_id;
   String mobile_no = '';
   String? endTime;
   String version = '101';
   bool isLoading = true;
-  bool notice_flag = false;
-  var timer_flag;
+  //bool notice_flag = false;
+  //var timer_flag;
 
   Location location = Location();
   // location.enableBackgroundMode();
@@ -82,26 +90,36 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    dmPathData = Boxes.getDmPathDataModel().get('dmPathData');
+    loginDataInfo = Boxes.getLoginDataModel().get('userInfo');
+    othersData = Boxes.getOthersDataModel().get('others');
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((prefs) {
-        startTime = prefs.getString("startTime") ?? '';
-        endTime = prefs.getString("endTime") ?? '';
-        report_url = prefs.getString("report_rx_url")!;
-        medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
-        cid = prefs.getString("CID")!;
-        userId = prefs.getString("USER_ID")!;
-        userPassword = prefs.getString("PASSWORD")!;
+        //startTime = prefs.getString("startTime") ?? '';
+        startTime = othersData!.startTime;
+        // endTime = prefs.getString("endTime") ?? '';
+        endTime = othersData!.endTime;
+
+        //report_url = prefs.getString("report_rx_url")!;
+        //medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
+        //cid = prefs.getString("CID")!;
+        //userId = prefs.getString("USER_ID")!;
+        //userPassword = prefs.getString("PASSWORD") ?? '';
         deviceId = prefs.getString("deviceId") ?? " ";
-        areaPage = prefs.getString("areaPage");
-        userName = prefs.getString("userName");
-        user_id = prefs.getString("user_id");
+        //areaPage = prefs.getString("areaPage");
+        //userName = prefs.getString("userName");
+        //user_id = prefs.getString("user_id");
         mobile_no = prefs.getString("mobile_no") ?? '';
-        plugin_url = prefs.getString("plugin_url") ?? '';
-        notice_flag = prefs.getBool("notice_flag") ?? false;
-        timer_flag = prefs.getBool("timer_flag");
+        //plugin_url = prefs.getString("plugin_url") ?? '';
+        //notice_flag = prefs.getBool("notice_flag") ?? false;
+        //timer_flag = prefs.getBool("timer_flag");
+
+        // var data = prefs.getString("area_url");
+        //print("object21111111111111111111===============${data}");
 
         setState(() {
-          notice_flag = prefs.getBool("notice_flag") ?? false;
+          //notice_flag = prefs.getBool("notice_flag") ?? false;
           int space = startTime!.indexOf(" ");
           String removeSpace =
               startTime!.substring(space + 1, startTime!.length);
@@ -116,13 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
 //------------------------------------------------------
 
-      print("flag ashtse ${timer_flag}");
+      //print("flag ashtse ${timer_flag}");
 
-      
       getPermission();
 
       setState(() {});
-      print("Noti Flag $notice_flag");
+      //print("Noti Flag $notice_flag");
     });
   }
 
@@ -148,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (_serviceEnabled &&
         _permissionGranted == PermissionStatus.granted &&
-        timer_flag == true) {
+        loginDataInfo!.timerFlag == true) {
       //await initializeService();
 
       BGservice.serviceOn();
@@ -244,14 +261,30 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () async {
                   final prefs = await SharedPreferences.getInstance();
 
+                  anotherOtherData = Boxes.getOthersDataModel();
+                  anotherOtherData!.toMap().forEach((key, value) {
+                    value.userPass = '';
+                    value.endTime = '';
+                    value.startTime = '';
+                    anotherOtherData!.put(key, value);
+                  });
+
                   // await prefs.setString('USER_ID', '');
                   // await prefs.setString('PASSWORD', '');
 
-                  prefs.clear();
+                  //prefs.clear();
 
-                  await prefs.setString('CID', cid);
+                  //old task
+                  await prefs.setString('CID', othersData!.cid);
 
-                  print("Update Timer flage : $timer_flag");
+                  // othersData!.box!.put('cid', othersData!.cid);
+                  // othersData!.box!.put('user_pass', '');
+                  // loginDataInfo!.box!.put('user_id', '');
+
+                  // OthersDataModel(cid: "SKF", userPass: '');
+                  // othersData.
+
+                  print("Update Timer flage : ${loginDataInfo!.timerFlag}");
 
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()));
@@ -505,10 +538,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => RxReportScreen(
-                                          cid: cid,
-                                          userId: userId,
-                                          userPassword: userPassword,
-                                          report_url: report_url,
+                                          cid: othersData!.cid,
+                                          userId: loginDataInfo!.userId,
+                                          userPassword: othersData!.userPass,
+                                          report_url: dmPathData!.reportRxUrl,
                                         ),
                                       ),
                                     );
@@ -541,7 +574,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Row(
                             children: [
-                              notice_flag
+                              loginDataInfo!.noticeFlag
                                   ? Expanded(
                                       child: CustomHomeButton(
                                         icon: Icons.note_alt,
@@ -621,18 +654,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           Expanded(
                             child: Link(
                                 uri: Uri.parse(
-                                    '$plugin_url?cid=$cid&rep_id=$userId&rep_pass=$userPassword'),
+                                    '${dmPathData!.pluginUrl}?cid=${othersData!.cid}&rep_id=${loginDataInfo!.userId}&rep_pass=${othersData!.userPass}'),
                                 target: LinkTarget.blank,
                                 builder:
                                     (BuildContext ctx, FollowLink? openLink) {
                                   print(
-                                      '$plugin_url?cid=$cid&rep_id=$userId&rep_pass=$userPassword');
+                                      'plugin====${dmPathData!.pluginUrl}?cid=${othersData!.cid}&rep_id=${loginDataInfo!.userId}&rep_pass=${othersData!.userPass}');
                                   return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         elevation: 5,
-                                        fixedSize:
-                                            Size(screenWidth, screenHeight / 8),
-                                        primary: Colors.white),
+                                        backgroundColor: Colors.white,
+                                        fixedSize: Size(
+                                            screenWidth, screenHeight / 8)),
                                     onPressed: openLink,
                                     child: Row(
                                       children: [

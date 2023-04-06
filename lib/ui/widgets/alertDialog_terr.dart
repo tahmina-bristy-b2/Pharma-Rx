@@ -25,9 +25,7 @@ List regionName = [];
 
 class TerritoryList extends StatefulWidget {
   String region = "";
-
   String area = " ";
-
   String territory = "";
   TerritoryList({
     Key? key,

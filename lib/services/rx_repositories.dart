@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:pharma_rx/models/boxes.dart';
 import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/models/login_data_model.dart';
+import 'package:pharma_rx/models/others_data_model.dart';
 import 'package:pharma_rx/services/all_services.dart';
 import 'package:pharma_rx/services/apis.dart';
 import 'package:pharma_rx/services/data_provider.dart';
@@ -77,8 +78,11 @@ class Repository {
       String version,
       List<String> rxTypeList) async {
     final loginDataBox = Boxes.getLoginDataModel();
+    final othersDataModelBox = Boxes.getOthersDataModel();
     Map<String, dynamic> userInfo = {};
+    Map<String, dynamic> othersInfo = {};
     LoginDataModel loginDataModel;
+    OthersDataModel othersDataModel;
 
     try {
       print(Apis().login(deviceId, deviceBrand, deviceModel, cid, userId,
@@ -101,6 +105,15 @@ class Repository {
       if (status == 'Success') {
         loginDataModel = loginDataModelFromJson(jsonEncode(body));
         loginDataBox.put('userInfo', loginDataModel);
+        othersInfo = {
+          "cid": cid,
+          "user_pass": password,
+        };
+
+        othersDataModel = othersDataModelFromJson(jsonEncode(othersInfo));
+        othersDataModelBox.put('others', othersDataModel);
+
+        //previous code
         bool timerFlag = false;
         String userName = userInfo['user_name'];
         String userId = userInfo['user_id'];

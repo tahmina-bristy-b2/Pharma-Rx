@@ -16,6 +16,7 @@ import 'package:pharma_rx/main.dart';
 import 'package:pharma_rx/models/boxes.dart';
 import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/models/login_data_model.dart';
+import 'package:pharma_rx/models/others_data_model.dart';
 import 'package:pharma_rx/services/apiCall.dart';
 import 'package:pharma_rx/ui/pages/Rx/notice_screen.dart';
 import 'package:pharma_rx/ui/pages/Rx/rx_draft_screen.dart';
@@ -57,6 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Box? box;
   DmPathDataModel? dmPathData;
   LoginDataModel? loginDataInfo;
+  OthersDataModel? othersData;
+  Box<OthersDataModel>? anotherOtherData;
 
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
@@ -65,12 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
   double screenWidth = 0.0;
   //String report_url = '';
   //String medicine_rx_url = '';
-  String cid = '';
+  //String cid = '';
   //String userId = '';
-  String userPassword = '';
+  //String userPassword = '';
   String deviceId = "";
   //String plugin_url = "";
-  String? areaPage;
+  //String? areaPage;
   //String? userName;
   String? startTime;
   //String? user_id;
@@ -89,18 +92,22 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     dmPathData = Boxes.getDmPathDataModel().get('dmPathData');
     loginDataInfo = Boxes.getLoginDataModel().get('userInfo');
+    othersData = Boxes.getOthersDataModel().get('others');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((prefs) {
-        startTime = prefs.getString("startTime") ?? '';
-        endTime = prefs.getString("endTime") ?? '';
+        //startTime = prefs.getString("startTime") ?? '';
+        startTime = othersData!.startTime;
+        // endTime = prefs.getString("endTime") ?? '';
+        endTime = othersData!.endTime;
+
         //report_url = prefs.getString("report_rx_url")!;
         //medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
-        cid = prefs.getString("CID")!;
+        //cid = prefs.getString("CID")!;
         //userId = prefs.getString("USER_ID")!;
-        userPassword = prefs.getString("PASSWORD") ?? '';
+        //userPassword = prefs.getString("PASSWORD") ?? '';
         deviceId = prefs.getString("deviceId") ?? " ";
-        areaPage = prefs.getString("areaPage");
+        //areaPage = prefs.getString("areaPage");
         //userName = prefs.getString("userName");
         //user_id = prefs.getString("user_id");
         mobile_no = prefs.getString("mobile_no") ?? '';
@@ -254,14 +261,30 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () async {
                   final prefs = await SharedPreferences.getInstance();
 
+                  anotherOtherData = Boxes.getOthersDataModel();
+                  anotherOtherData!.toMap().forEach((key, value) {
+                    value.userPass = '';
+                    value.endTime = '';
+                    value.startTime = '';
+                    anotherOtherData!.put(key, value);
+                  });
+
                   // await prefs.setString('USER_ID', '');
                   // await prefs.setString('PASSWORD', '');
 
-                  prefs.clear();
+                  //prefs.clear();
 
-                  await prefs.setString('CID', cid);
+                  //old task
+                  await prefs.setString('CID', othersData!.cid);
 
-                  print("Update Timer flage : $loginDataInfo!.timerFlag");
+                  // othersData!.box!.put('cid', othersData!.cid);
+                  // othersData!.box!.put('user_pass', '');
+                  // loginDataInfo!.box!.put('user_id', '');
+
+                  // OthersDataModel(cid: "SKF", userPass: '');
+                  // othersData.
+
+                  print("Update Timer flage : ${loginDataInfo!.timerFlag}");
 
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()));
@@ -515,9 +538,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => RxReportScreen(
-                                          cid: cid,
+                                          cid: othersData!.cid,
                                           userId: loginDataInfo!.userId,
-                                          userPassword: userPassword,
+                                          userPassword: othersData!.userPass,
                                           report_url: dmPathData!.reportRxUrl,
                                         ),
                                       ),
@@ -631,18 +654,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           Expanded(
                             child: Link(
                                 uri: Uri.parse(
-                                    '${dmPathData!.pluginUrl}?cid=$cid&rep_id=${loginDataInfo!.userId}&rep_pass=$userPassword'),
+                                    '${dmPathData!.pluginUrl}?cid=${othersData!.cid}&rep_id=${loginDataInfo!.userId}&rep_pass=${othersData!.userPass}'),
                                 target: LinkTarget.blank,
                                 builder:
                                     (BuildContext ctx, FollowLink? openLink) {
                                   print(
-                                      'plugin====${dmPathData!.pluginUrl}?cid=$cid&rep_id=${loginDataInfo!.userId}&rep_pass=$userPassword');
+                                      'plugin====${dmPathData!.pluginUrl}?cid=${othersData!.cid}&rep_id=${loginDataInfo!.userId}&rep_pass=${othersData!.userPass}');
                                   return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         elevation: 5,
-                                        fixedSize:
-                                            Size(screenWidth, screenHeight / 8),
-                                        primary: Colors.white),
+                                        backgroundColor: Colors.white,
+                                        fixedSize: Size(
+                                            screenWidth, screenHeight / 8)),
                                     onPressed: openLink,
                                     child: Row(
                                       children: [

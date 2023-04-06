@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:pharma_rx/models/boxes.dart';
 import 'package:pharma_rx/models/dmpath_data_model.dart';
+import 'package:pharma_rx/models/others_data_model.dart';
 import 'package:pharma_rx/services/all_services.dart';
 import 'package:pharma_rx/services/rx_repositories.dart';
 import 'package:pharma_rx/services/sharedPrefernce.dart';
@@ -31,6 +32,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  OthersDataModel? othersData;
   final _companyIdController = TextEditingController();
   final _userIdController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -52,17 +54,22 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   initState() {
     super.initState();
+    othersData = Boxes.getOthersDataModel().get('others');
 
     _getDeviceInfo();
+    othersData!.cid;
+    if (othersData!.cid != '') {
+      _companyIdController.text = othersData!.cid.toString();
+    }
 
-    SharedPreferences.getInstance().then((prefs) {
-      if (prefs.getString("CID") != null) {
-        var a = prefs.getString("CID");
-        setState(() {
-          _companyIdController.text = a.toString();
-        });
-      }
-    });
+    // SharedPreferences.getInstance().then((prefs) {
+    //   if (prefs.getString("CID") != null) {
+    //     var a = prefs.getString("CID");
+    //     setState(() {
+    //       _companyIdController.text = a.toString();
+    //     });
+    //   }
+    // });
   }
 
   Future _getDeviceInfo() async {

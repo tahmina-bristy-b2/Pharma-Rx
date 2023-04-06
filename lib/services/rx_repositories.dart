@@ -108,6 +108,13 @@ class Repository {
         othersInfo = {
           "cid": cid,
           "user_pass": password,
+          "areaPage": "",
+          "start_time": "",
+          "end_time": "",
+          "version": version,
+          "device_id": deviceId,
+          "device_model": deviceModel,
+          "device_brand": deviceBrand,
         };
 
         othersDataModel = othersDataModelFromJson(jsonEncode(othersInfo));

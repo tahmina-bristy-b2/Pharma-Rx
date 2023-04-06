@@ -22,13 +22,17 @@ class OthersDataModelAdapter extends TypeAdapter<OthersDataModel> {
       areaPage: fields[2] as String,
       startTime: fields[3] as String,
       endTime: fields[4] as String,
+      version: fields[5] as String,
+      deviceId: fields[6] as String,
+      deviceModel: fields[7] as String,
+      deviceBrand: fields[8] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, OthersDataModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.cid)
       ..writeByte(1)
@@ -38,7 +42,15 @@ class OthersDataModelAdapter extends TypeAdapter<OthersDataModel> {
       ..writeByte(3)
       ..write(obj.startTime)
       ..writeByte(4)
-      ..write(obj.endTime);
+      ..write(obj.endTime)
+      ..writeByte(5)
+      ..write(obj.version)
+      ..writeByte(6)
+      ..write(obj.deviceId)
+      ..writeByte(7)
+      ..write(obj.deviceModel)
+      ..writeByte(8)
+      ..write(obj.deviceBrand);
   }
 
   @override

@@ -32,7 +32,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  Box? box;
   OthersDataModel? othersData;
+  Box<OthersDataModel>? otherDataBox;
   final _companyIdController = TextEditingController();
   final _userIdController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -42,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Color initialColor = Colors.white;
   bool _obscureText = true;
   List dcrDataList = [];
-  Box? box;
 
   String login_url = '';
   String deviceId = '';
@@ -57,9 +58,11 @@ class _LoginScreenState extends State<LoginScreen> {
     othersData = Boxes.getOthersDataModel().get('others');
 
     _getDeviceInfo();
-    othersData!.cid;
-    if (othersData!.cid != '') {
-      _companyIdController.text = othersData!.cid.toString();
+    //othersData!.cid;
+    if (othersData != null) {
+      if (othersData!.cid != '') {
+        _companyIdController.text = othersData!.cid.toString();
+      }
     }
 
     // SharedPreferences.getInstance().then((prefs) {
@@ -86,6 +89,14 @@ class _LoginScreenState extends State<LoginScreen> {
     } on PlatformException {
       deviceId = 'Failed to get deviceId.';
     }
+
+    otherDataBox = Boxes.getOthersDataModel();
+    otherDataBox!.toMap().forEach((key, value) {
+      value.deviceId = deviceId;
+      value.deviceBrand = deviceBrand!;
+      value.deviceModel = deviceModel!;
+      value.version = version;
+    });
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('deviceId', deviceId);

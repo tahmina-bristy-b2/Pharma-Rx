@@ -20,12 +20,24 @@ class OthersDataModel extends HiveObject {
   String startTime;
   @HiveField(4)
   String endTime;
+  @HiveField(5)
+  String version;
+  @HiveField(6)
+  String deviceId;
+  @HiveField(7)
+  String deviceModel;
+  @HiveField(8)
+  String deviceBrand;
   OthersDataModel({
     required this.cid,
     required this.userPass,
     required this.areaPage,
     required this.startTime,
     required this.endTime,
+    required this.version,
+    required this.deviceId,
+    required this.deviceModel,
+    required this.deviceBrand,
   });
 
   factory OthersDataModel.fromJson(Map<String, dynamic> json) =>
@@ -35,6 +47,10 @@ class OthersDataModel extends HiveObject {
         areaPage: json["areaPage"] ?? "",
         startTime: json["start_time"] ?? "",
         endTime: json["end_time"] ?? "",
+        version: json["version"] ?? "",
+        deviceId: json["device_id"] ?? "",
+        deviceModel: json["device_model"] ?? "",
+        deviceBrand: json["device_brand"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -43,5 +59,9 @@ class OthersDataModel extends HiveObject {
         "areaPage": areaPage,
         "start_time": startTime,
         "end_time": endTime,
+        "version": version,
+        "device_id": deviceId,
+        "device_model": deviceModel,
+        "device_brand": deviceBrand,
       };
 }

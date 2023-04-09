@@ -57,22 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     othersData = Boxes.getOthersDataModel().get('others');
 
-    _getDeviceInfo();
-    //othersData!.cid;
     if (othersData != null) {
       if (othersData!.cid != '') {
         _companyIdController.text = othersData!.cid.toString();
       }
     }
-
-    // SharedPreferences.getInstance().then((prefs) {
-    //   if (prefs.getString("CID") != null) {
-    //     var a = prefs.getString("CID");
-    //     setState(() {
-    //       _companyIdController.text = a.toString();
-    //     });
-    //   }
-    // });
+    _getDeviceInfo();
   }
 
   Future _getDeviceInfo() async {
@@ -89,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } on PlatformException {
       deviceId = 'Failed to get deviceId.';
     }
-
     otherDataBox = Boxes.getOthersDataModel();
     otherDataBox!.toMap().forEach((key, value) {
       value.deviceId = deviceId;
@@ -280,9 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         if (value!.isEmpty) {
                                           return 'Please enter your password.';
                                         }
-                                        // if (value.length >= 6) {
-                                        //   return 'Password is too short ,please expand';
-                                        // }
+
                                         return null;
                                       },
                                     ),
@@ -396,14 +383,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 //     login_url,
                 //     context);
               }
-
-              // SharedPreferncesMethod()
-              //     .sharedPreferenceSetDataForLogin(
-              //         _companyIdController.text
-              //             .toUpperCase(),
-              //         _userIdController.text,
-              //
-              //     _passwordController.text);
             }
 
 //==============================================================================================
@@ -516,7 +495,7 @@ class _LoginScreenState extends State<LoginScreen> {
   //       String submit_photo_url = status['submit_photo_url'];
   //       String medicine_rx_url = status['medicine_rx_url'];
   //       String change_pass_url = status['change_pass_url'];
-  //       String timer_track_url = status['timer_track_url'];
+  //      String timer_track_url = status['timer_track_url'];
   //       String plugin_url = status['plugin_url'];
   //       String sync_notice_url = status['sync_notice_url'];
   //       // String photo_url = status['photo_url'];

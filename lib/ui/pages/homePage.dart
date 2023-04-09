@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:async';
 import 'dart:ui';
 
@@ -13,10 +15,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:location/location.dart';
 import 'package:pharma_rx/main.dart';
+
 import 'package:pharma_rx/models/boxes.dart';
 import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/models/login_data_model.dart';
 import 'package:pharma_rx/models/others_data_model.dart';
+import 'package:pharma_rx/services/all_services.dart';
 import 'package:pharma_rx/services/apiCall.dart';
 import 'package:pharma_rx/ui/pages/Rx/notice_screen.dart';
 import 'package:pharma_rx/ui/pages/Rx/rx_draft_screen.dart';
@@ -66,23 +70,15 @@ class _MyHomePageState extends State<MyHomePage> {
   List data = [];
   double screenHeight = 0.0;
   double screenWidth = 0.0;
-  //String report_url = '';
-  //String medicine_rx_url = '';
-  //String cid = '';
-  //String userId = '';
-  //String userPassword = '';
-  String deviceId = "";
-  //String plugin_url = "";
-  //String? areaPage;
-  //String? userName;
+
+  //String deviceId = "";
+
   String? startTime;
-  //String? user_id;
-  String mobile_no = '';
+
+  //String mobile_no = '';
   String? endTime;
-  String version = '101';
+  //String version = '101';
   bool isLoading = true;
-  //bool notice_flag = false;
-  //var timer_flag;
 
   Location location = Location();
   // location.enableBackgroundMode();
@@ -96,30 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((prefs) {
-        //startTime = prefs.getString("startTime") ?? '';
         startTime = othersData!.startTime;
-        // endTime = prefs.getString("endTime") ?? '';
         endTime = othersData!.endTime;
-
-        //report_url = prefs.getString("report_rx_url")!;
-        //medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
-        //cid = prefs.getString("CID")!;
-        //userId = prefs.getString("USER_ID")!;
-        //userPassword = prefs.getString("PASSWORD") ?? '';
-        deviceId = prefs.getString("deviceId") ?? " ";
-        //areaPage = prefs.getString("areaPage");
-        //userName = prefs.getString("userName");
-        //user_id = prefs.getString("user_id");
-        mobile_no = prefs.getString("mobile_no") ?? '';
-        //plugin_url = prefs.getString("plugin_url") ?? '';
-        //notice_flag = prefs.getBool("notice_flag") ?? false;
-        //timer_flag = prefs.getBool("timer_flag");
-
-        // var data = prefs.getString("area_url");
-        //print("object21111111111111111111===============${data}");
-
         setState(() {
-          //notice_flag = prefs.getBool("notice_flag") ?? false;
           int space = startTime!.indexOf(" ");
           String removeSpace =
               startTime!.substring(space + 1, startTime!.length);
@@ -130,16 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       });
 
-//------------------------------------------------------
-
-//------------------------------------------------------
-
-      //print("flag ashtse ${timer_flag}");
-
+      // RxAllServices().getPermission(Location.instance, loginDataInfo);
+//old code
       getPermission();
-
       setState(() {});
-      //print("Noti Flag $notice_flag");
     });
   }
 
@@ -220,11 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         key: _drawerKey,
         endDrawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll,
-          // through the options in the drawer if there isn't enough vertical,
-          // space to fit everything.
           child: ListView(
-            // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
@@ -269,21 +234,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     anotherOtherData!.put(key, value);
                   });
 
-                  // await prefs.setString('USER_ID', '');
-                  // await prefs.setString('PASSWORD', '');
-
-                  //prefs.clear();
-
                   //old task
                   await prefs.setString('CID', othersData!.cid);
-
-                  // othersData!.box!.put('cid', othersData!.cid);
-                  // othersData!.box!.put('user_pass', '');
-                  // loginDataInfo!.box!.put('user_id', '');
-
-                  // OthersDataModel(cid: "SKF", userPass: '');
-                  // othersData.
-
                   print("Update Timer flage : ${loginDataInfo!.timerFlag}");
 
                   Navigator.pushReplacement(context,
@@ -296,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 138, 201, 149),
-          title: Text('MREPORTING v' + version),
+          title: Text('MREPORTING ${othersData!.version}'),
           titleTextStyle: const TextStyle(
               color: Color.fromARGB(255, 27, 56, 34),
               fontWeight: FontWeight.w500,
@@ -366,7 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           ),
                                         ),
                                         Text(
-                                          'ID: ' + widget.user_id,
+                                          'ID: ${widget.user_id}',
                                           // ' $userName',
                                           style: const TextStyle(
                                             color: Colors.black,
@@ -476,11 +428,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: CustomHomeButton(
                                   icon: Icons.camera_alt_sharp,
                                   onClick: () {
-                                    // setState(() {
-                                    //   isLoading = true;
-                                    // });
-                                    // getArea();
-
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -732,128 +679,128 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class BGservice {
-  static Future<void> serviceOn() async {
-    await initializeService();
-  }
-}
+// class BGservice {
+//   static Future<void> serviceOn() async {
+//     await initializeService();
+//   }
+// }
 
-Future<void> initializeService() async {
-  final service = FlutterBackgroundService();
-  await service.configure(
-    androidConfiguration: AndroidConfiguration(
-      // this will executed when app is in foreground or background in separated isolate
-      onStart: onStart,
+// Future<void> initializeService() async {
+//   final service = FlutterBackgroundService();
+//   await service.configure(
+//     androidConfiguration: AndroidConfiguration(
+//       // this will executed when app is in foreground or background in separated isolate
+//       onStart: onStart,
 
-      // auto start service
-      autoStart: true,
-      isForegroundMode: true,
-      initialNotificationTitle: "Pharma-Rx",
-      initialNotificationContent: "Background Service is Running",
-    ),
-    iosConfiguration: IosConfiguration(
-      // auto start service
-      autoStart: true,
+//       // auto start service
+//       autoStart: true,
+//       isForegroundMode: true,
+//       initialNotificationTitle: "Pharma-Rx",
+//       initialNotificationContent: "Background Service is Running",
+//     ),
+//     iosConfiguration: IosConfiguration(
+//       // auto start service
+//       autoStart: true,
 
-      // this will executed when app is in foreground in separated isolate
-      onForeground: onStart,
+//       // this will executed when app is in foreground in separated isolate
+//       onForeground: onStart,
 
-      // you have to enable background fetch capability on xcode project
-      onBackground: onIosBackground,
-    ),
-  );
-  service.startService();
-}
+//       // you have to enable background fetch capability on xcode project
+//       onBackground: onIosBackground,
+//     ),
+//   );
+//   service.startService();
+// }
 
-FutureOr<bool> onIosBackground(ServiceInstance service) {
-  WidgetsFlutterBinding.ensureInitialized();
-  print('FLUTTER BACKGROUND FETCH');
-  return true;
-}
+// FutureOr<bool> onIosBackground(ServiceInstance service) {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   print('FLUTTER BACKGROUND FETCH');
+//   return true;
+// }
 
-void onStart(ServiceInstance service) {
-  DartPluginRegistrant.ensureInitialized();
+// void onStart(ServiceInstance service) {
+//   DartPluginRegistrant.ensureInitialized();
 
-  if (service is AndroidServiceInstance) {
-    service.on('setAsForeground').listen((event) {
-      service.setAsForegroundService();
-    });
+//   if (service is AndroidServiceInstance) {
+//     service.on('setAsForeground').listen((event) {
+//       service.setAsForegroundService();
+//     });
 
-    service.on('setAsBackground').listen((event) {
-      service.setAsBackgroundService();
-    });
-  }
+//     service.on('setAsBackground').listen((event) {
+//       service.setAsBackgroundService();
+//     });
+//   }
 
-  service.on('stopService').listen((event) {
-    service.stopSelf();
-  });
-  //********************Loop start********************
-  Timer.periodic(const Duration(minutes: 5), (timer) async {
-    // if (!(await service.isServiceRunning())) timer.cancel();
+//   service.on('stopService').listen((event) {
+//     service.stopSelf();
+//   });
+//   //********************Loop start********************
+//   Timer.periodic(const Duration(minutes: 5), (timer) async {
+//     // if (!(await service.isServiceRunning())) timer.cancel();
 
-    // //     //------------Internet Connectivity Check---------------------------
-    // final bool isConnected = await InternetConnectionChecker().hasConnection;
-    // print('Internet connection: $isConnected');
-    // // // ----------------------------------------------------------------------
-    // //     //----------------Set Notification------------------
-    // if (isConnected) {
-    //   service.setNotificationInfo(
-    //     title: "mRep7",
-    //     content: "Updated at ${DateTime.now()}",
-    //   );
-    // } else {
-    //   service.setNotificationInfo(
-    //     title: "mRep7",
-    //     content: "Updated at ${DateTime.now()}",
-    //   );
-    // }
+//     // //     //------------Internet Connectivity Check---------------------------
+//     // final bool isConnected = await InternetConnectionChecker().hasConnection;
+//     // print('Internet connection: $isConnected');
+//     // // // ----------------------------------------------------------------------
+//     // //     //----------------Set Notification------------------
+//     // if (isConnected) {
+//     //   service.setNotificationInfo(
+//     //     title: "mRep7",
+//     //     content: "Updated at ${DateTime.now()}",
+//     //   );
+//     // } else {
+//     //   service.setNotificationInfo(
+//     //     title: "mRep7",
+//     //     content: "Updated at ${DateTime.now()}",
+//     //   );
+//     // }
 
-    //     //------------------------Geo Location-----------------
+//     //     //------------------------Geo Location-----------------
 
-    try {
-      geo.Position? position = await geo.Geolocator.getCurrentPosition();
-      if (position != null) {
-        lat = position.latitude;
-        long = position.longitude;
+//     try {
+//       geo.Position? position = await geo.Geolocator.getCurrentPosition();
+//       if (position != null) {
+//         lat = position.latitude;
+//         long = position.longitude;
 
-        List<geocoding.Placemark> placemarks =
-            await geocoding.placemarkFromCoordinates(lat, long);
+//         List<geocoding.Placemark> placemarks =
+//             await geocoding.placemarkFromCoordinates(lat, long);
 
-        address = placemarks[0].street! + " " + placemarks[0].country!;
-      }
-    } on Exception catch (e) {
-      print("Exception geolocator section: $e");
-    }
+//         address = "${placemarks[0].street!} ${placemarks[0].country!}";
+//       }
+//     } on Exception catch (e) {
+//       print("Exception geolocator section: $e");
+//     }
 
-    print('latlong: $lat, $long');
+//     print('latlong: $lat, $long');
 
-    //     //--------------------Api Hit Logic-----------------------------
+//     //     //--------------------Api Hit Logic-----------------------------
 
-    if (lat != 0.0 && long != 0.0) {
-      if (location == "") {
-        location = "$lat|$long|$address";
-      } else {
-        location = "$location||$lat|$long|$address";
-      }
-    }
+//     if (lat != 0.0 && long != 0.0) {
+//       if (location == "") {
+//         location = "$lat|$long|$address";
+//       } else {
+//         location = "$location||$lat|$long|$address";
+//       }
+//     }
 
-    print(location);
+//     print(location);
 
-    // service.sendData(
-    //   {
-    //     //"current_date": DateTime.now().toIso8601String(),
-    //   },
-    // );
-    //     //-------------------------------------------------
-  });
-  Timer.periodic(Duration(minutes: 15), (timer) async {
-    var body = await ApiCall().timeTracker(location);
-    // print(body["status"]);
-    if (body["status"] == "Success") {
-      location = "";
-    } else {
-      Fluttertoast.showToast(msg: "failed");
-      location = "";
-    }
-  });
-}
+//     // service.sendData(
+//     //   {
+//     //     //"current_date": DateTime.now().toIso8601String(),
+//     //   },
+//     // );
+//     //     //-------------------------------------------------
+//   });
+//   Timer.periodic(Duration(minutes: 15), (timer) async {
+//     var body = await ApiCall().timeTracker(location);
+//     // print(body["status"]);
+//     if (body["status"] == "Success") {
+//       location = "";
+//     } else {
+//       Fluttertoast.showToast(msg: "failed");
+//       location = "";
+//     }
+//   });
+// }

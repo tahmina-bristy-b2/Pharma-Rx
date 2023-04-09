@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pharma_rx/models/boxes.dart';
+import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/services/sharedPrefernce.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +21,9 @@ String timer_track_url = "";
 String sync_notice_url = "";
 
 sharedpref() async {
+  DmPathDataModel? dmPathData;
+  dmPathData = Boxes.getDmPathDataModel().get('dmPathData');
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   cid = await prefs.getString("CID");
@@ -32,7 +37,9 @@ sharedpref() async {
   sync_notice_url = prefs.getString("sync_notice_url") ?? "";
   report_rx_url = await prefs.getString("report_rx_url");
   doctor_url = await prefs.getString("doctor_url");
-  timer_track_url = prefs.getString("timer_track_url") ?? "";
+  //timer_track_url = prefs.getString("timer_track_url") ?? "";
+  timer_track_url = dmPathData!.timerTrackUrl;
+
   // print(prefs.getKeys());
 }
 
@@ -169,9 +176,10 @@ class ApiCall {
     // print(cid);
     // print(user_id);
     // print(user_pass);
-    print(location);
     print(
-        '$timer_track_url?cid=$cid&user_id=$user_id&user_pass=$user_pass&device_id=$deviceId&locations=$location');
+        "ami eikhne          =================================================");
+    print(
+        'traker==========$timer_track_url?cid=$cid&user_id=$user_id&user_pass=$user_pass&device_id=$deviceId&locations=$location');
     if (location != "") {
       final response = await http.post(
         Uri.parse(

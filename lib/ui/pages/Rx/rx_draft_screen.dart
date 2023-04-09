@@ -62,7 +62,7 @@ class _RxDraftScreenState extends State<RxDraftScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 138, 201, 149),
+          backgroundColor: const Color.fromARGB(255, 138, 201, 149),
           title: const Text('Draft Rx Doctor'),
           titleTextStyle: const TextStyle(
               color: Color.fromARGB(255, 27, 56, 34),

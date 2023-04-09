@@ -1,6 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-// ignore_for_file: avoid_function_literals_in_foreach_calls, must_be_immutable
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -108,13 +105,9 @@ class _MedicinListScreenState extends State<MedicinListScreen> {
     foundUsers = widget.medicineData;
     searchControlled = enteredKeyword;
     print(searchControlled);
-    // print("medicine list ${widget.medicineData.length}");
+
     List results = [];
-    // if (enteredKeyword.isEmpty) {
-    //   // if the search field is empty or only contains white-space, we'll display all users
-    //   foundUsers;
-    //   // results = foundUsers;
-    // } else {
+
     var starts = foundUsers
         .where((s) =>
             s['name'].toLowerCase().startsWith(enteredKeyword.toLowerCase()))

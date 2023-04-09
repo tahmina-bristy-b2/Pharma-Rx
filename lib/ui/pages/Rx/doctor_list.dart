@@ -1,16 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_typing_uninitialized_variables
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:pharma_rx/models/boxes.dart';
 import 'package:pharma_rx/models/hive_data_model.dart';
-import 'package:pharma_rx/services/apiCall.dart';
-import 'package:pharma_rx/ui/pages/loginPage.dart';
-import 'package:pharma_rx/ui/pages/sync_data_tab_page.dart';
 import 'package:pharma_rx/ui/widgets/alertDialogOrphar.dart';
 import 'package:pharma_rx/ui/widgets/alertDialog_terr.dart';
 

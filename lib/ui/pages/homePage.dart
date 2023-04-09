@@ -96,30 +96,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((prefs) {
-        //startTime = prefs.getString("startTime") ?? '';
         startTime = othersData!.startTime;
-        // endTime = prefs.getString("endTime") ?? '';
         endTime = othersData!.endTime;
 
-        //report_url = prefs.getString("report_rx_url")!;
-        //medicine_rx_url = prefs.getString("medicine_rx_url") ?? "";
-        //cid = prefs.getString("CID")!;
-        //userId = prefs.getString("USER_ID")!;
-        //userPassword = prefs.getString("PASSWORD") ?? '';
         deviceId = prefs.getString("deviceId") ?? " ";
-        //areaPage = prefs.getString("areaPage");
-        //userName = prefs.getString("userName");
-        //user_id = prefs.getString("user_id");
         mobile_no = prefs.getString("mobile_no") ?? '';
-        //plugin_url = prefs.getString("plugin_url") ?? '';
-        //notice_flag = prefs.getBool("notice_flag") ?? false;
-        //timer_flag = prefs.getBool("timer_flag");
-
-        // var data = prefs.getString("area_url");
-        //print("object21111111111111111111===============${data}");
 
         setState(() {
-          //notice_flag = prefs.getBool("notice_flag") ?? false;
           int space = startTime!.indexOf(" ");
           String removeSpace =
               startTime!.substring(space + 1, startTime!.length);
@@ -134,12 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 //------------------------------------------------------
 
-      //print("flag ashtse ${timer_flag}");
-
       getPermission();
 
       setState(() {});
-      //print("Noti Flag $notice_flag");
     });
   }
 

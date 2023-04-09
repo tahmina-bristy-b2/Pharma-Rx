@@ -1,18 +1,11 @@
-// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
-
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:pharma_rx/models/boxes.dart';
-import 'package:pharma_rx/models/dmpath_data_model.dart';
 import 'package:pharma_rx/models/others_data_model.dart';
 import 'package:pharma_rx/services/all_services.dart';
 import 'package:pharma_rx/services/rx_repositories.dart';
-import 'package:pharma_rx/services/sharedPrefernce.dart';
 import 'package:pharma_rx/ui/pages/homePage.dart';
 import 'package:pharma_rx/ui/pages/sync_data_tab_page.dart';
 import 'package:platform_device_id/platform_device_id.dart';
